@@ -1,0 +1,30 @@
+<model name="gal:photoGalleryModel" xmlns="http://www.alfresco.org/model/dictionary/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<description>Alfresco University Content Modeling</description>
+		<author>Alfresco University Student</author>
+
+		<imports>
+			<import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+			<import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+			<import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+		</imports>
+
+	<namespaces>
+		<namespace uri="http://university.alfresco.org/model/gallery/1.0" prefix="gal"/>
+	</namespaces>
+
+		<types>
+			<type name="gal:photo">
+				<title>Gallery Photo</title>
+				<parent>cm:content</parent>
+				<properties>
+					<property name="gal:location">
+						<title>Location</title>
+						<type>d:text</type>
+					</property>
+				</properties>
+			</type>
+		</types>
+
+
+</model>
