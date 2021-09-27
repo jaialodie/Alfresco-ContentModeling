@@ -44,6 +44,15 @@
             </list>
         </property>
     </bean>
+    <bean id="reviewBehavior" class="org.alfresco.university.platformsample.Review"
+          init-method="init">
+        <property name="nodeService">
+            <ref bean="NodeService" />
+        </property>
+        <property name="policyComponent">
+            <ref bean="policyComponent" />
+        </property>
+    </bean>
 
 
 </beans>
