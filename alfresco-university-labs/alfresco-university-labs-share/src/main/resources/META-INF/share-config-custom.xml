@@ -12,6 +12,7 @@
         <types>
             <type name="cm:content">
                 <subtype name="gal:photo"/>
+                <subtype name="rev:reviewable"/>
             </type>
             <type name="cm:folder">
                 <subtype name="gal:album"/>
