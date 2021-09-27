@@ -3,6 +3,8 @@
     <config evaluator="string-compare" condition="DocumentLibrary">
         <aspects>
 		<visible>
+            <aspect name="rev:reviewable" />
+            <aspect name="gal:selfie"/>
 		</visible>
             <addable> <!-- defaults to visible config -->
             </addable>
@@ -12,7 +14,6 @@
         <types>
             <type name="cm:content">
                 <subtype name="gal:photo"/>
-                <subtype name="rev:reviewable"/>
             </type>
             <type name="cm:folder">
                 <subtype name="gal:album"/>
@@ -625,4 +626,13 @@
 		  </form>
 	   </forms>
 	</config>
+    <config evaluator="aspect" condition="rev:reviewable">
+        <forms>
+            <form>
+                <field-visibility>
+                    <show id="rev:numOfWords" />
+                </field-visibility>
+            </form>
+        </forms>
+    </config>
 </alfresco-config>
