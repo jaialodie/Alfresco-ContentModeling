@@ -13,18 +13,18 @@
 		<namespace uri="http://university.alfresco.org/model/review/1.0" prefix="rev"/>
 	</namespaces>
 
-		<types>
-			<type name="rev:reviewable">
-				<title>Reviewable Document</title>
-				<parent>cm:content</parent>
+		<aspects>
+			<aspect name="rev:reviewable">
+				<title>Reviewable</title>
 				<properties>
 					<property name="rev:numOfWords">
 						<title>Number of words</title>
 						<type>d:int</type>
+						<mandatory>true</mandatory>
 					</property>
 				</properties>
-			</type>
-		</types>
+			</aspect>
+		</aspects>
 
 
 </model>
