@@ -1,20 +1,24 @@
 package org.alfresco.university.platformsample;
 
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
 
+
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.Behaviour;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
 import org.alfresco.repo.policy.Behaviour.NotificationFrequency;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.ServiceRegistry;
+import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.apache.log4j.Logger;
 
-import org.alfresco.university.platformsample.ReviewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Review
         implements NodeServicePolicies.OnCreateNodePolicy {
@@ -23,11 +27,13 @@ public class Review
     private NodeService nodeService;
     private PolicyComponent policyComponent;
     private ContentService contentService;
+    private ServiceRegistry serviceRegistry;
 
     // Behaviours
     private Behaviour onCreateNode;
 
-    private Logger logger = Logger.getLogger(Review.class);
+    private Logger logger = LoggerFactory.getLogger(Review.class);
+
 
     public void init() {
         if (logger.isDebugEnabled()) logger.debug("Initializing review behaviors");
@@ -55,14 +61,14 @@ public class Review
             logger.info("onAddDocument: A new document with ref ({}) was just created in folder ({})",
                     docRef, parentFolderRef);
             //
-            ContentReader reader = contentService.getReader(docRef,ContentModel.PROP_CONTENT);
+            ContentReader reader = contentService.getReader(docRef, ContentModel.PROP_CONTENT);
             int numOfWords = Contador(reader);
 
             nodeService.setProperty(
                     docRef,
                     QName.createQName(
-                            SomeCoRatingsModel.NAMESPACE_ALFRESCO_REVIEW_CONTENT_MODEL,
-                            SomeCoRatingsModel.PROP_NUM_OF_WORDS),
+                            ReviewModel.NAMESPACE_ALFRESCO_REVIEW_CONTENT_MODEL,
+                            ReviewModel.PROP_NUM_OF_WORDS),
                     numOfWords);
 
         }
@@ -71,7 +77,7 @@ public class Review
     public Integer Contador (ContentReader reader) {
         int contador = 0;
 		try {
-            BufferedReader br = new BufferedReader(reader);
+            BufferedReader br = new BufferedReader((Reader) reader);
             System.out.println("TEXTO LEIDO");
             System.out.println("----- -----\n");
 
@@ -86,12 +92,14 @@ public class Review
                 //Leemos siguiente línea
                 linea = br.readLine();
             }
-            return contador;
             br.close();
+            return contador;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -117,4 +125,11 @@ public class Review
         this.policyComponent = policyComponent;
     }
 
+    public void setContentService(ContentService contentService) {
+        this.contentService = contentService;
+    }
+
+    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
+    }
 }
