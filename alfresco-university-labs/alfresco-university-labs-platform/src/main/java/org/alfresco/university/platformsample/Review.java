@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Review
-        implements NodeServicePolicies.OnCreateNodePolicy {
+        implements NodeServicePolicies.OnCreateNodePolicy, NodeServicePolicies.OnUpdateNodePolicy {
 
     // Dependencies
     private NodeService nodeService;
@@ -71,6 +71,31 @@ public class Review
                             ReviewModel.PROP_NUM_OF_WORDS),
                     numOfWords);
 
+        }
+    }
+
+    @Override
+    public void onUpdateNode(NodeRef docRef) {
+        if (logger.isDebugEnabled()) logger.debug("Inside onCreateNode");
+
+        // Check if node exists, might be moved, or created and deleted in same transaction.
+        if (docRef == null || !serviceRegistry.getNodeService().exists(docRef)) {
+            // Does not exist, nothing to do
+            logger.warn("onUpdateDocument: A document was updated but removed in same transaction");
+            return;
+        } else {
+            logger.info("onUpdateDocument: A new document with ref ({}) was just updated",
+                    docRef);
+            //
+            ContentReader reader = contentService.getReader(docRef, ContentModel.PROP_CONTENT);
+            int numOfWords = Contador(reader);
+
+            nodeService.setProperty(
+                    docRef,
+                    QName.createQName(
+                            ReviewModel.NAMESPACE_ALFRESCO_REVIEW_CONTENT_MODEL,
+                            ReviewModel.PROP_NUM_OF_WORDS),
+                    numOfWords);
         }
     }
 
@@ -132,4 +157,6 @@ public class Review
     public void setServiceRegistry(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
     }
+
+
 }
