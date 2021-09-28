@@ -31,36 +31,32 @@ public class Review
 
     // Behaviours
     private Behaviour onCreateNode;
+    private Behaviour onUpdateNode;
 
-    private Logger logger = LoggerFactory.getLogger(Review.class);
+    // private Logger logger = LoggerFactory.getLogger(Review.class);
 
 
     public void init() {
-        if (logger.isDebugEnabled()) logger.debug("Initializing review behaviors");
+        //if (logger.isDebugEnabled()) logger.debug("Initializing review behaviors");
 
         // Create behaviours
         this.onCreateNode = new JavaBehaviour(this, "onCreateNode", NotificationFrequency.TRANSACTION_COMMIT);
-
+        this.onUpdateNode = new JavaBehaviour(this, "onUpdateNode", NotificationFrequency.TRANSACTION_COMMIT);
 
         // Bind behaviours to node policies
         this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onCreateNode"), QName.createQName(ReviewModel.NAMESPACE_ALFRESCO_REVIEW_CONTENT_MODEL, ReviewModel.ASPECT_SCR_REVIEWABLE), this.onCreateNode);
+        this.policyComponent.bindClassBehaviour(QName.createQName(NamespaceService.ALFRESCO_URI, "onUpdateNode"), QName.createQName(ReviewModel.NAMESPACE_ALFRESCO_REVIEW_CONTENT_MODEL, ReviewModel.ASPECT_SCR_REVIEWABLE), this.onUpdateNode);
     }
 
     public void onCreateNode(ChildAssociationRef parentChildAssocRef) {
-        if (logger.isDebugEnabled()) logger.debug("Inside onCreateNode");
+        //if (logger.isDebugEnabled()) logger.debug("Inside onCreateNode");
         //
         NodeRef parentFolderRef = parentChildAssocRef.getParentRef();
         NodeRef docRef = parentChildAssocRef.getChildRef();
 
         // Check if node exists, might be moved, or created and deleted in same transaction.
-        if (docRef == null || !serviceRegistry.getNodeService().exists(docRef)) {
-            // Does not exist, nothing to do
-            logger.warn("onAddDocument: A new document was added but removed in same transaction");
-            return;
-        } else {
-            logger.info("onAddDocument: A new document with ref ({}) was just created in folder ({})",
-                    docRef, parentFolderRef);
-            //
+        //if (docRef == null || !serviceRegistry.getNodeService().exists(docRef)) {
+
             ContentReader reader = contentService.getReader(docRef, ContentModel.PROP_CONTENT);
             int numOfWords = Contador(reader);
 
@@ -71,22 +67,16 @@ public class Review
                             ReviewModel.PROP_NUM_OF_WORDS),
                     numOfWords);
 
-        }
+
     }
 
     @Override
     public void onUpdateNode(NodeRef docRef) {
-        if (logger.isDebugEnabled()) logger.debug("Inside onCreateNode");
+        //if (logger.isDebugEnabled()) logger.debug("Inside onUpdateNode");
 
         // Check if node exists, might be moved, or created and deleted in same transaction.
-        if (docRef == null || !serviceRegistry.getNodeService().exists(docRef)) {
-            // Does not exist, nothing to do
-            logger.warn("onUpdateDocument: A document was updated but removed in same transaction");
-            return;
-        } else {
-            logger.info("onUpdateDocument: A new document with ref ({}) was just updated",
-                    docRef);
-            //
+        //if (docRef == null || !serviceRegistry.getNodeService().exists(docRef)) {
+
             ContentReader reader = contentService.getReader(docRef, ContentModel.PROP_CONTENT);
             int numOfWords = Contador(reader);
 
@@ -96,16 +86,13 @@ public class Review
                             ReviewModel.NAMESPACE_ALFRESCO_REVIEW_CONTENT_MODEL,
                             ReviewModel.PROP_NUM_OF_WORDS),
                     numOfWords);
-        }
+
     }
 
     public Integer Contador (ContentReader reader) {
         int contador = 0;
 		try {
             BufferedReader br = new BufferedReader((Reader) reader);
-            System.out.println("TEXTO LEIDO");
-            System.out.println("----- -----\n");
-
             String linea = br.readLine();
             while (linea != null) {
                 //Imprimir cada liena en consola
