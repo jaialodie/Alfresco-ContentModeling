@@ -8,7 +8,7 @@ public interface ReviewModel {
     public static final String ASPECT_SCR_REVIEWABLE = "reviewable";
 
     // Properties
-    public static final String PROP_NUM_OF_WORDS = "numberOfWords";
+    public static final String PROP_NUM_OF_WORDS = "numOfWords";
 
 
 }
